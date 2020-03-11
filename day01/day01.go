@@ -1,5 +1,10 @@
 package day01
 
+import (
+	"fmt"
+	"io"
+)
+
 /*
 
 Solve1 solves the following AOC problem:
@@ -16,12 +21,21 @@ The apartment building is very tall, and the basement is very deep; he will
 never find the top or bottom floors.
 
 */
-func Solve1(input string) (floor int) {
-	for _, r := range input {
+func Solve1(input io.Reader) (floor int, err error) {
+	for {
+		var r rune
+		_, se := fmt.Fscanf(input, "%c", &r)
+		if se == io.EOF {
+			break
+		} else if se != nil {
+			panic(se)
+		}
 		if r == '(' {
 			floor++
 		} else if r == ')' {
 			floor--
+		} else if r != ' ' && r != '\t' && r != '\r' && r != '\n' {
+			err = fmt.Errorf("Invalid input character: %q", r)
 		}
 	}
 	return
@@ -44,14 +58,23 @@ What is the position of the character that causes Santa to first enter the
 basement?
 
 */
-func Solve2(input string) (step int) {
+func Solve2(input io.Reader) (step int, err error) {
 	floor := 0
-	for i, r := range input {
-		step = i + 1
+	var r rune
+	for {
+		_, se := fmt.Fscanf(input, "%c", &r)
+		if se == io.EOF {
+			break
+		} else if se != nil {
+			panic(se)
+		}
+		step++
 		if r == '(' {
 			floor++
 		} else if r == ')' {
 			floor--
+		} else if r != ' ' && r != '\t' && r != '\r' && r != '\n' {
+			err = fmt.Errorf("Invalid input character: %q", r)
 		}
 		if floor < 0 {
 			return

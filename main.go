@@ -9,7 +9,7 @@ import (
 	"github.com/mauzzr/AOC2015/day02"
 )
 
-func readFile(path string) (f io.Reader) {
+func openFile(path string) (f *os.File) {
 	f, err := os.Open(path)
 	if err != nil {
 		panic(err)
@@ -19,13 +19,17 @@ func readFile(path string) (f io.Reader) {
 }
 
 func main() {
-	f := readFile("input/day01.txt")
-	var day01Input string
-	fmt.Fscanln(f, &day01Input)
-	fmt.Printf("Day 1, Part 1: Santa ends on floor %d\n", day01.Solve1(day01Input))
-	fmt.Printf("Day 1, Part 2: Santa enters the basement after %d steps.\n", day01.Solve2(day01Input))
+	day01Input := openFile("input/day01.txt")
+	defer day01Input.Close()
+	res, err := day01.Solve1(day01Input)
+	if err != nil {
+		fmt.Print(err)
+	}
+	fmt.Printf("Day 1, Part 1: Santa ends on floor %d\n", res)
+	res, err = day01.Solve2(day01Input)
+	fmt.Printf("Day 1, Part 2: Santa enters the basement after %d steps.\n", res)
 
-	f = readFile("input/day02.txt")
+	f := openFile("input/day02.txt")
 	var day02Input []string
 	var day02Line string
 
