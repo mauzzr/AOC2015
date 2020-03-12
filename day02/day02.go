@@ -1,9 +1,12 @@
 package day02
 
 import (
+	"fmt"
+	"io"
 	"sort"
 	"strconv"
 	"strings"
+	"unicode/utf8"
 )
 
 /*
@@ -33,10 +36,21 @@ feet.
  wrapping paper should they order?
 
 */
-func Solve1(lines []string) (totalSurfaceArea int) {
-	for _, line := range lines {
-		l, w, h := parseLine(line)
-
+func Solve1(input io.Reader) (totalSurfaceArea int, err error) {
+	for {
+		var line string
+		_, err = fmt.Fscanln(input, &line)
+		if err == io.EOF {
+			err = nil
+			break
+		} else if err != nil {
+			return
+		}
+		var l, w, h int
+		l, w, h, err = parseLine(line)
+		if err != nil {
+			return
+		}
 		totalSurfaceArea += wrappingPaperArea(l, w, h)
 	}
 	return
@@ -66,9 +80,23 @@ feet.
 
 How many total feet of ribbon should they order?
 */
-func Solve2(lines []string) (totalLength int) {
-	for _, line := range lines {
-		l, w, h := parseLine(line)
+func Solve2(input io.Reader) (totalLength int, err error) {
+	for {
+		var line string
+		_, err = fmt.Fscanln(input, &line)
+		if err == io.EOF {
+			err = nil
+			break
+		} else if err != nil {
+			return
+		}
+
+		var l, w, h int
+		l, w, h, err = parseLine(line)
+		if err != nil {
+			return
+		}
+
 		totalLength += ribbonLength(l, w, h)
 	}
 	return
@@ -102,14 +130,26 @@ func wrappingPaperArea(l int, w int, h int) int {
 	return 2*(t1+t2+t3) + min
 }
 
-func parseLine(line string) (l int, w int, h int) {
+func parseLine(line string) (l int, w int, h int, err error) {
+	// skip empty lines
+	// this is ugly but at least it's unicode-aware
+	buf := []byte(line)
+	if utf8.RuneCount(buf) == 0 {
+		return
+	}
 	subs := strings.Split(line, "x")
 	if len(subs) != 3 {
-		panic("Invalid box dimensions")
+		err = fmt.Errorf("Wrong number of dimensions: %d from %q", len(subs), line)
+		return
 	}
-	l, _ = strconv.Atoi(subs[0])
-	w, _ = strconv.Atoi(subs[1])
-	h, _ = strconv.Atoi(subs[2])
 
+	var se error
+	l, se = strconv.Atoi(subs[0])
+	w, se = strconv.Atoi(subs[1])
+	h, se = strconv.Atoi(subs[2])
+
+	if l < 0 || w < 0 || h < 0 || se != nil {
+		err = fmt.Errorf("Invalid box measurements %dx%dx%d", l, w, h)
+	}
 	return
 }
