@@ -27,6 +27,9 @@ func main() {
 	}
 	fmt.Printf("Day 1, Part 1: Santa ends on floor %d\n", res)
 	res, err = day01.Solve2(day01Input)
+	if err != nil {
+		fmt.Print(err)
+	}
 	fmt.Printf("Day 1, Part 2: Santa enters the basement after %d steps.\n", res)
 
 	f := openFile("input/day02.txt")
