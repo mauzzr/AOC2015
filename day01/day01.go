@@ -28,7 +28,8 @@ func Solve1(input io.Reader) (floor int, err error) {
 		if se == io.EOF {
 			break
 		} else if se != nil {
-			panic(se)
+			err = se
+			return
 		}
 		if r == '(' {
 			floor++
@@ -66,7 +67,8 @@ func Solve2(input io.Reader) (step int, err error) {
 		if se == io.EOF {
 			break
 		} else if se != nil {
-			panic(se)
+			err = se
+			return
 		}
 		step++
 		if r == '(' {
