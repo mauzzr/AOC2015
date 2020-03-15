@@ -21,6 +21,7 @@ func openFile(path string) (f *os.File) {
 func main() {
 	var res interface{}
 	var err error
+
 	day01Input := openFile("input/day01.txt")
 	defer day01Input.Close()
 	res, err = day01.Solve1(day01Input)

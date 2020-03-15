@@ -137,6 +137,7 @@ func parseLine(line string) (l int, w int, h int, err error) {
 	if utf8.RuneCount(buf) == 0 {
 		return
 	}
+
 	subs := strings.Split(line, "x")
 	if len(subs) != 3 {
 		err = fmt.Errorf("Wrong number of dimensions: %d from %q", len(subs), line)
