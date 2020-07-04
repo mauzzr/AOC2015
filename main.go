@@ -8,6 +8,7 @@ import (
 	"github.com/mauzzr/AOC2015/day01"
 	"github.com/mauzzr/AOC2015/day02"
 	"github.com/mauzzr/AOC2015/day03"
+	"github.com/mauzzr/AOC2015/day04"
 )
 
 func openFile(path string) (f *os.File) {
@@ -63,4 +64,18 @@ func main() {
 		fmt.Println("ERROR:", err)
 	}
 	fmt.Printf("Day 3, Part 2: %d houses receive at least one present.\n", res)
+
+	day04Input := openFile("input/day04.txt")
+	defer day04Input.Close()
+	res, err = day04.Solve(day04Input, true)
+	if err != nil {
+		fmt.Println("ERROR:", err)
+	}
+	fmt.Printf("Day 4, Part 1: Suffix is %d\n", res)
+	day04Input.Seek(0, io.SeekStart)
+	res, err = day04.Solve(day04Input, false)
+	fmt.Printf("Day 4, Part 2: Suffix is %d\n", res)
+	if err != nil {
+		fmt.Println("ERROR:", err)
+	}
 }
