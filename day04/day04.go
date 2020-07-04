@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"fmt"
 	"io"
+	"os"
 	"strconv"
 	"time"
 )
@@ -75,5 +76,35 @@ func md5Crack(prefix string, n int, lastMask byte, result chan<- int) {
 			break
 		}
 		n += numThreads
+	}
+}
+
+/*
+Solver holds the File reference for this day's input and implements the
+SolutionPrinter interface.
+*/
+type Solver struct {
+	Input *os.File
+}
+
+/*
+PrintSolutions prints the solutions for this day's problems.
+*/
+func (s Solver) PrintSolutions() {
+	defer s.Input.Close()
+	res, err := Solve(s.Input, true)
+	if err != nil {
+		fmt.Println("ERROR:", err)
+	} else {
+		fmt.Printf("Day 4, Part 1: Suffix is %d\n", res)
+	}
+
+	s.Input.Seek(0, io.SeekStart)
+
+	res, err = Solve(s.Input, false)
+	if err != nil {
+		fmt.Println("ERROR:", err)
+	} else {
+		fmt.Printf("Day 4, Part 2: Suffix is %d\n", res)
 	}
 }

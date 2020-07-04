@@ -3,6 +3,7 @@ package day01
 import (
 	"fmt"
 	"io"
+	"os"
 )
 
 /*
@@ -21,10 +22,10 @@ The apartment building is very tall, and the basement is very deep; he will
 never find the top or bottom floors.
 
 */
-func Solve1(input io.Reader) (floor int, err error) {
+func Solve1(Input io.Reader) (floor int, err error) {
 	for {
 		var r rune
-		_, se := fmt.Fscanf(input, "%c", &r)
+		_, se := fmt.Fscanf(Input, "%c", &r)
 		if se == io.EOF {
 			break
 		} else if se != nil {
@@ -36,7 +37,7 @@ func Solve1(input io.Reader) (floor int, err error) {
 		} else if r == ')' {
 			floor--
 		} else if r != ' ' && r != '\t' && r != '\r' && r != '\n' {
-			err = fmt.Errorf("Invalid input character: %q", r)
+			err = fmt.Errorf("Invalid Input character: %q", r)
 		}
 	}
 	return
@@ -59,11 +60,11 @@ What is the position of the character that causes Santa to first enter the
 basement?
 
 */
-func Solve2(input io.Reader) (step int, err error) {
+func Solve2(Input io.Reader) (step int, err error) {
 	floor := 0
 	var r rune
 	for {
-		_, se := fmt.Fscanf(input, "%c", &r)
+		_, se := fmt.Fscanf(Input, "%c", &r)
 		if se == io.EOF {
 			break
 		} else if se != nil {
@@ -76,11 +77,42 @@ func Solve2(input io.Reader) (step int, err error) {
 		} else if r == ')' {
 			floor--
 		} else if r != ' ' && r != '\t' && r != '\r' && r != '\n' {
-			err = fmt.Errorf("Invalid input character: %q", r)
+			err = fmt.Errorf("Invalid Input character: %q", r)
 		}
 		if floor < 0 {
 			return
 		}
 	}
 	return
+}
+
+/*
+Solver holds the File reference for this day's input and implements the
+SolutionPrinter interface.
+*/
+type Solver struct {
+	Input *os.File
+}
+
+/*
+PrintSolutions prints the solutions for this day's problems.
+*/
+func (s Solver) PrintSolutions() {
+	defer s.Input.Close()
+	res, err := Solve1(s.Input)
+	if err != nil {
+		fmt.Println("ERROR:", err)
+	} else {
+		fmt.Printf("Day 1, Part 1: Santa ends on floor %d\n", res)
+	}
+
+	s.Input.Seek(0, io.SeekStart)
+
+	res, err = Solve2(s.Input)
+	if err != nil {
+		fmt.Println("ERROR:", err)
+	} else {
+		fmt.Printf("Day 1, Part 2: Santa enters the basement after %d steps.\n", res)
+	}
+
 }

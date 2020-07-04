@@ -3,6 +3,7 @@ package day03
 import (
 	"fmt"
 	"io"
+	"os"
 )
 
 type point struct {
@@ -144,4 +145,34 @@ func Solve2(input io.Reader) (uniqueHouses int, err error) {
 
 	uniqueHouses = len(houses)
 	return
+}
+
+/*
+Solver holds the File reference for this day's input and implements the
+SolutionPrinter interface.
+*/
+type Solver struct {
+	Input *os.File
+}
+
+/*
+PrintSolutions prints the solutions for this day's problems.
+*/
+func (s Solver) PrintSolutions() {
+	defer s.Input.Close()
+	res, err := Solve1(s.Input)
+	if err != nil {
+		fmt.Println("ERROR:", err)
+	} else {
+		fmt.Printf("Day 3, Part 1: %d houses receive at least one present\n", res)
+	}
+
+	s.Input.Seek(0, io.SeekStart)
+
+	res, err = Solve2(s.Input)
+	if err != nil {
+		fmt.Println("ERROR:", err)
+	} else {
+		fmt.Printf("Day 3, Part 2: %d houses receive at least one present.\n", res)
+	}
 }

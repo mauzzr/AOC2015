@@ -3,6 +3,7 @@ package day02
 import (
 	"fmt"
 	"io"
+	"os"
 	"sort"
 	"strconv"
 	"strings"
@@ -153,4 +154,34 @@ func parseLine(line string) (l int, w int, h int, err error) {
 		err = fmt.Errorf("Invalid box measurements %dx%dx%d", l, w, h)
 	}
 	return
+}
+
+/*
+Solver holds the File reference for this day's input and implements the
+SolutionPrinter interface.
+*/
+type Solver struct {
+	Input *os.File
+}
+
+/*
+PrintSolutions prints the solutions for this day's problems.
+*/
+func (s Solver) PrintSolutions() {
+	defer s.Input.Close()
+	res, err := Solve1(s.Input)
+	if err != nil {
+		fmt.Println("ERROR:", err)
+	} else {
+		fmt.Printf("Day 2, Part 1: The elves should order %d square feet of wrapping paper.\n", res)
+	}
+
+	s.Input.Seek(0, io.SeekStart)
+
+	res, err = Solve2(s.Input)
+	if err != nil {
+		fmt.Println("ERROR:", err)
+	} else {
+		fmt.Printf("Day 2, Part 2: The elves should order %d feet of ribbon.\n", res)
+	}
 }
